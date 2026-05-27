@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VARNIK Deal Analyzer</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #0a0a0a;
@@ -13,7 +13,6 @@
       --text: #ffffff;
       --muted: #888888;
       --accent: #ccff00;
-      --accent-dark: #a3cc00;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; }
@@ -21,7 +20,7 @@
       background: var(--bg);
       color: var(--text);
       font-family: 'DM Mono', monospace;
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.6;
     }
     .navbar {
@@ -30,91 +29,93 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 20px;
     }
-    .logo-group {
+    .navbar-left {
       display: flex;
       align-items: baseline;
-      gap: 12px;
+      gap: 10px;
     }
     .logo {
       font-family: 'Playfair Display', serif;
-      font-size: 20px;
-      font-weight: 800;
+      font-size: 18px;
+      font-weight: 900;
       color: var(--accent);
-      letter-spacing: 2px;
+      letter-spacing: 1px;
     }
     .logo-subtitle {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 1px;
+      font-weight: 500;
     }
-    .nav-right {
+    .navbar-right {
       font-size: 10px;
       color: var(--accent);
       text-transform: uppercase;
       letter-spacing: 1px;
       border: 1px solid var(--accent);
-      padding: 8px 16px;
+      padding: 6px 12px;
+      flex-shrink: 0;
     }
-    .hero {
-      min-height: calc(100vh - 65px);
-      padding: 40px 40px 60px 40px;
+    .hero-section {
+      min-height: calc(100vh - 61px);
+      padding: 80px 40px 60px 40px;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
+      justify-content: center;
       align-items: center;
       text-align: center;
-      padding-top: 60px;
+      position: relative;
     }
-    .hero-content { max-width: 900px; margin-bottom: 40px; }
+    .hero-content { max-width: 900px; margin-bottom: 60px; }
     .hero h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 5rem;
-      font-weight: 800;
-      margin-bottom: 0;
-      line-height: 0.9;
+      font-size: 5.5rem;
+      font-weight: 900;
+      margin: 0;
+      line-height: 0.95;
       color: var(--text);
-      letter-spacing: -1px;
+      letter-spacing: -2px;
     }
     .hero-subtitle {
       font-family: 'Playfair Display', serif;
-      font-size: 4rem;
-      font-weight: 800;
+      font-size: 4.2rem;
+      font-weight: 900;
       color: var(--accent);
       font-style: italic;
-      margin-bottom: 30px;
-      line-height: 0.9;
+      margin: 10px 0 30px 0;
+      line-height: 0.95;
       letter-spacing: -1px;
     }
     .hero-desc {
       color: var(--muted);
       font-size: 13px;
       line-height: 1.9;
-      max-width: 700px;
+      max-width: 720px;
       margin: 0 auto;
     }
-    .search-container {
+    .search-box {
       background: transparent;
       border: 1px solid var(--border);
       padding: 40px;
       max-width: 900px;
       width: 100%;
       margin: 0 auto;
-      margin-top: 40px;
     }
     .search-label {
       display: block;
       font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 2px;
       color: var(--accent);
       margin-bottom: 24px;
       font-weight: 600;
     }
-    .search-input-wrapper {
+    .search-input-row {
       display: flex;
-      gap: 16px;
+      gap: 14px;
       align-items: flex-end;
       margin-bottom: 20px;
     }
@@ -126,18 +127,18 @@
       color: var(--text);
       font-family: 'DM Mono', monospace;
       font-size: 14px;
-      padding: 16px 0;
+      padding: 14px 0;
     }
-    input::placeholder { color: var(--muted); }
+    input::placeholder { color: var(--muted); font-size: 13px; }
     input:focus { 
       outline: none; 
       border-bottom-color: var(--accent);
     }
     .analyze-btn {
       background: var(--accent);
-      color: #000;
+      color: #000000;
       border: none;
-      padding: 14px 32px;
+      padding: 12px 28px;
       font-family: 'DM Mono', monospace;
       font-size: 11px;
       font-weight: 700;
@@ -145,10 +146,10 @@
       text-transform: uppercase;
       letter-spacing: 1.5px;
       white-space: nowrap;
-      transition: all 0.2s;
+      transition: background 0.2s;
     }
     .analyze-btn:hover:not(:disabled) { 
-      background: var(--accent-dark);
+      background: #a3cc00;
     }
     .analyze-btn:disabled { 
       opacity: 0.5; 
@@ -159,17 +160,21 @@
       color: var(--muted);
       letter-spacing: 0.5px;
     }
-    .footer-text {
+    .footer-disclaimer {
       position: absolute;
       bottom: 40px;
       left: 40px;
       right: 40px;
-      font-size: 11px;
+      font-size: 10px;
       color: var(--muted);
-      line-height: 1.7;
-      max-width: 800px;
+      line-height: 1.8;
+      max-width: 1000px;
     }
-    .loading { display: none; text-align: center; padding: 60px 40px; }
+    .loading { 
+      display: none; 
+      text-align: center; 
+      padding: 60px 40px; 
+    }
     .loading.active { display: block; }
     .spinner {
       border: 2px solid var(--border);
@@ -187,15 +192,15 @@
       border: 1px solid #ff4444; 
       padding: 16px; 
       margin: 40px auto; 
-      max-width: 600px; 
-      border-radius: 2px; 
+      max-width: 700px; 
+      border-radius: 0px; 
       color: #ff8888; 
-      font-size: 12px; 
+      font-size: 12px;
     }
     .error.active { display: block; }
-    .results-view { display: none; }
-    .results-view.active { display: block; }
-    .results-container {
+    .results-section { display: none; }
+    .results-section.active { display: block; }
+    .results-wrapper {
       max-width: 1200px;
       margin: 0 auto;
       padding: 60px 40px;
@@ -211,9 +216,9 @@
       padding: 28px;
     }
     .card h2 {
-      font-size: 11px;
+      font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 2px;
       color: var(--accent);
       margin-bottom: 24px;
       font-weight: 700;
@@ -227,10 +232,10 @@
     }
     .data-row:last-child { border-bottom: none; }
     .data-label { color: var(--muted); }
-    .data-value { color: var(--text); text-align: right; }
+    .data-value { color: var(--text); text-align: right; word-break: break-word; }
     .summary-card { grid-column: 1 / -1; }
     .summary-text { color: var(--text); font-size: 13px; line-height: 1.8; }
-    .links-row {
+    .links-container {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
@@ -239,7 +244,7 @@
     .ext-link {
       color: var(--accent);
       text-decoration: none;
-      font-size: 11px;
+      font-size: 10px;
       padding: 8px 16px;
       border: 1px solid var(--border);
       transition: all 0.2s;
@@ -249,70 +254,67 @@
       border-color: var(--accent); 
     }
     @media (max-width: 768px) {
-      .hero { padding: 40px 20px 60px 20px; padding-top: 40px; }
+      .hero-section { padding: 40px 20px 60px 20px; }
       .hero h1 { font-size: 3rem; }
-      .hero-subtitle { font-size: 2.2rem; }
-      .navbar { padding: 16px 20px; flex-direction: column; gap: 12px; align-items: flex-start; }
-      .logo-group { width: 100%; }
-      .search-container { padding: 24px; margin-top: 30px; }
-      .search-input-wrapper { flex-direction: column; align-items: stretch; }
+      .hero-subtitle { font-size: 2rem; }
+      .navbar { flex-direction: column; align-items: flex-start; }
+      .search-box { padding: 24px; }
+      .search-input-row { flex-direction: column; align-items: stretch; }
       .results-grid { grid-template-columns: 1fr; }
+      .footer-disclaimer { left: 20px; right: 20px; bottom: 20px; }
     }
   </style>
 </head>
 <body>
   <div class="navbar">
-    <div class="logo-group">
+    <div class="navbar-left">
       <div class="logo">VARNIK</div>
       <div class="logo-subtitle">DEAL ANALYZER</div>
     </div>
-    <div class="nav-right">Charleston CO · Live Data</div>
+    <div class="navbar-right">Charleston CO · Live Data</div>
   </div>
 
-  <div id="heroView">
-    <div class="hero">
-      <div class="hero-content">
-        <h1>Drop an address.</h1>
-        <div class="hero-subtitle">Get the full picture.</div>
-        <p class="hero-desc">Zoning, flood zone, overlay districts, permitted uses, and comps — pulled directly from Charleston County GIS, City of Charleston, and FEMA. No middlemen.</p>
-      </div>
+  <div class="hero-section" id="heroView">
+    <div class="hero-content">
+      <h1>Drop an address.</h1>
+      <div class="hero-subtitle">Get the full picture.</div>
+      <p class="hero-desc">Zoning, flood zone, overlay districts, permitted uses, and comps — pulled directly from Charleston County GIS, City of Charleston, and FEMA. No middlemen.</p>
+    </div>
 
-      <div class="search-container">
-        <label class="search-label">Property Address or TMS Number</label>
-        <div class="search-input-wrapper">
-          <input type="text" id="addressInput" placeholder="e.g. 9 Maranda Holmes St, Charleston SC" onkeypress="handleKeyPress(event)" />
-          <button class="analyze-btn" id="analyzeBtn" onclick="analyzeDeal()">Analyze →</button>
-        </div>
-        <p class="search-hint">Works with full street address or TMS / APN number · Charleston County, SC</p>
+    <div class="search-box">
+      <label class="search-label">Property Address or TMS Number</label>
+      <div class="search-input-row">
+        <input 
+          type="text" 
+          id="addressInput" 
+          placeholder="e.g. 9 Maranda Holmes St, Charleston SC" 
+          onkeypress="if(event.key==='Enter') analyzeDeal()"
+        />
+        <button class="analyze-btn" id="analyzeBtn" onclick="analyzeDeal()">Analyze →</button>
       </div>
+      <p class="search-hint">Works with full street address or TMS / APN number · Charleston County, SC</p>
+    </div>
 
-      <div class="loading" id="loadingState">
-        <div class="spinner"></div>
-        <p>Pulling data...</p>
-      </div>
+    <div class="loading" id="loadingState">
+      <div class="spinner"></div>
+      <p>Pulling data...</p>
+    </div>
 
-      <div class="error" id="errorState"></div>
+    <div class="error" id="errorState"></div>
 
-      <div class="footer-text">
-        All parcel and zoning data pulled directly from Charleston County GIS (gisccapps.charlestoncounty.org) and City of Charleston official GIS. Flood data from FEMA DFIRM via Charleston County. Comparable sales based on market knowledge and public records. Always verify zoning with the relevant planning department before making underwriting decisions. This tool does not constitute legal or financial advice.
-      </div>
+    <div class="footer-disclaimer">
+      All parcel and zoning data pulled directly from Charleston County GIS (gisccapps.charlestoncounty.org) and City of Charleston official GIS. Flood data from FEMA DFIRM via Charleston County. Comparable sales based on market knowledge and public records. Always verify zoning with the relevant planning department before making underwriting decisions. This tool does not constitute legal or financial advice.
     </div>
   </div>
 
-  <div class="results-view" id="resultsView">
-    <div class="results-container">
-      <div class="results-grid" id="results"></div>
+  <div class="results-section" id="resultsView">
+    <div class="results-wrapper">
+      <div class="results-grid" id="resultsGrid"></div>
     </div>
   </div>
 
   <script>
     const BACKEND_URL = 'https://deal-analyzer-backend-production.up.railway.app/api/analyze';
-
-    function handleKeyPress(event) {
-      if (event.key === 'Enter') {
-        analyzeDeal();
-      }
-    }
 
     async function analyzeDeal() {
       const address = document.getElementById('addressInput').value.trim();
@@ -337,7 +339,6 @@
         }
 
         const data = await response.json();
-
         renderResults(data);
         document.getElementById('loadingState').classList.remove('active');
         document.getElementById('heroView').style.display = 'none';
@@ -391,7 +392,7 @@
 
         <div class="card summary-card">
           <h2>Official Sources</h2>
-          <div class="links-row">
+          <div class="links-container">
             ${[
               ['County GIS', data.directLinks?.countyGIS],
               ['City Zoning', data.directLinks?.cityZoning],
@@ -401,7 +402,7 @@
           </div>
         </div>
       `;
-      document.getElementById('results').innerHTML = html;
+      document.getElementById('resultsGrid').innerHTML = html;
     }
   </script>
 </body>
