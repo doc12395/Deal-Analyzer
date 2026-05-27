@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VARNIK Deal Analyzer — Charleston SC</title>
+  <title>VARNIK Deal Analyzer</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap" rel="css">
   <style>
     :root {
@@ -13,232 +13,245 @@
       --text: #e8e9e8;
       --muted: #8a8d8a;
       --accent: #7c3aed;
-      --danger: #ef4444;
+      --card: #1a1d1a;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
       background: var(--bg);
       color: var(--text);
       font-family: 'DM Mono', monospace;
-      font-size: 14px;
-      line-height: 1.6;
-      padding: 20px;
+      font-size: 13px;
+      line-height: 1.5;
+      overflow: hidden;
     }
-    .container { max-width: 900px; margin: 0 auto; }
+    .container { display: flex; height: 100vh; flex-direction: column; }
     header {
-      text-align: center;
-      margin-bottom: 40px;
+      padding: 24px 32px;
       border-bottom: 1px solid var(--border);
-      padding-bottom: 20px;
+      background: var(--bg);
     }
     h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 2.5rem;
-      margin-bottom: 10px;
+      font-size: 2rem;
       color: var(--accent);
+      margin-bottom: 4px;
     }
+    .subtitle { color: var(--muted); font-size: 12px; }
+    .main { display: flex; flex: 1; gap: 24px; padding: 24px 32px; overflow: hidden; }
+    .panel { display: flex; flex-direction: column; }
+    .search-panel { flex: 0 0 300px; }
+    .results-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
     .search-box {
       display: flex;
-      gap: 10px;
-      margin-bottom: 30px;
+      gap: 12px;
+      margin-bottom: 20px;
     }
     input {
       flex: 1;
       background: var(--surface);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 12px 16px;
+      padding: 12px;
       font-family: 'DM Mono', monospace;
-      font-size: 14px;
-      border-radius: 4px;
+      font-size: 12px;
+      border-radius: 2px;
     }
     input::placeholder { color: var(--muted); }
     button {
       background: var(--accent);
       color: white;
       border: none;
-      padding: 12px 24px;
+      padding: 12px 20px;
       font-family: 'DM Mono', monospace;
+      font-size: 12px;
       cursor: pointer;
-      border-radius: 4px;
+      border-radius: 2px;
       font-weight: 500;
     }
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    .loading { display: none; text-align: center; margin: 40px 0; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button:hover:not(:disabled) { background: #6d28d9; }
+    .loading { display: none; text-align: center; padding: 40px 20px; }
     .loading.active { display: block; }
     .spinner {
       border: 2px solid var(--border);
       border-top: 2px solid var(--accent);
       border-radius: 50%;
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
       animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
+      margin: 0 auto 12px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .error { display: none; background: rgba(239,68,68,0.1); border: 1px solid var(--danger); padding: 16px; margin: 20px 0; border-radius: 4px; }
+    .error { display: none; background: rgba(239,68,68,0.1); border: 1px solid #ef4444; padding: 16px; border-radius: 2px; color: #fca5a5; font-size: 12px; }
     .error.active { display: block; }
-    .results { display: none; margin-top: 40px; }
+    .results { display: none; overflow-y: auto; }
     .results.active { display: block; }
-    .result-section {
-      background: var(--surface);
+    .card {
+      background: var(--card);
       border: 1px solid var(--border);
       padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 4px;
+      margin-bottom: 16px;
+      border-radius: 2px;
     }
-    .result-section h2 {
-      font-size: 1.2rem;
-      margin-bottom: 12px;
+    .card h2 {
+      font-size: 13px;
       color: var(--accent);
-      font-family: 'DM Mono', monospace;
+      margin-bottom: 16px;
       font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     .data-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 12px;
+      gap: 16px;
     }
-    .data-item { padding: 8px; background: rgba(0,0,0,0.2); border-radius: 2px; }
-    .data-label { color: var(--muted); font-size: 12px; text-transform: uppercase; }
-    .data-value { color: var(--text); margin-top: 4px; word-break: break-word; }
-    .export-btn {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      margin-top: 20px;
-      cursor: pointer;
-      font-family: 'DM Mono', monospace;
-      border-radius: 4px;
+    .data-item { }
+    .data-label {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .data-value {
+      color: var(--text);
+      font-size: 13px;
+      word-break: break-word;
+    }
+    .summary-text {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
     }
     .links-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 12px;
+      gap: 8px;
     }
     .ext-link {
       color: var(--accent);
       text-decoration: none;
-      font-size: 12px;
+      font-size: 11px;
       padding: 6px 12px;
-      border: 1px solid var(--accent);
+      border: 1px solid var(--border);
       border-radius: 2px;
+      transition: all 0.2s;
     }
-    .ext-link:hover { background: rgba(124,58,237,0.1); }
+    .ext-link:hover {
+      background: rgba(124,58,237,0.1);
+      border-color: var(--accent);
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
       <h1>⚡ VARNIK</h1>
-      <p>Deal Analyzer — Charleston, SC</p>
+      <p class="subtitle">Deal Analyzer — Charleston, SC</p>
     </header>
 
-    <div class="search-box">
-      <input type="text" id="addressInput" placeholder="9 Maranda Holmes St, Charleston, SC 29403" />
-      <button id="analyzeBtn" onclick="analyzeDeal()">Analyze</button>
-    </div>
-
-    <div class="loading" id="loadingState">
-      <div class="spinner"></div>
-      <p>Analyzing property...</p>
-    </div>
-
-    <div class="error" id="errorState"></div>
-
-    <div class="results" id="results">
-      <div class="result-section">
-        <h2>Parcel Information</h2>
-        <div class="data-grid">
-          <div class="data-item">
-            <div class="data-label">TMS / PID</div>
-            <div class="data-value" id="rTMS">—</div>
-          </div>
-          <div class="data-item">
-            <div class="data-label">Acreage</div>
-            <div class="data-value" id="rAcreage">—</div>
-          </div>
-          <div class="data-item">
-            <div class="data-label">Lot Size (Sq Ft)</div>
-            <div class="data-value" id="rLotSize">—</div>
-          </div>
-          <div class="data-item">
-            <div class="data-label">County Use</div>
-            <div class="data-value" id="rCountyUse">—</div>
-          </div>
+    <div class="main">
+      <div class="search-panel">
+        <div class="search-box">
+          <input type="text" id="addressInput" placeholder="9 Maranda Holmes St..." />
+          <button id="analyzeBtn" onclick="analyzeDeal()">Go</button>
         </div>
+        <div class="loading" id="loadingState">
+          <div class="spinner"></div>
+          <p>Searching...</p>
+        </div>
+        <div class="error" id="errorState"></div>
       </div>
 
-      <div class="result-section">
-        <h2>Zoning</h2>
-        <div class="data-grid">
-          <div class="data-item">
-            <div class="data-label">Designation</div>
-            <div class="data-value" id="rZoning">—</div>
+      <div class="results-panel">
+        <div class="results" id="results">
+          <div class="card">
+            <h2>Parcel</h2>
+            <div class="data-grid">
+              <div class="data-item">
+                <span class="data-label">TMS</span>
+                <span class="data-value" id="rTMS">—</span>
+              </div>
+              <div class="data-item">
+                <span class="data-label">Acreage</span>
+                <span class="data-value" id="rAcreage">—</span>
+              </div>
+              <div class="data-item">
+                <span class="data-label">Sq Ft</span>
+                <span class="data-value" id="rLotSize">—</span>
+              </div>
+              <div class="data-item">
+                <span class="data-label">County Use</span>
+                <span class="data-value" id="rCountyUse">—</span>
+              </div>
+            </div>
           </div>
-          <div class="data-item">
-            <div class="data-label">Overlay District</div>
-            <div class="data-value" id="rOverlay">—</div>
+
+          <div class="card">
+            <h2>Zoning</h2>
+            <div class="data-grid">
+              <div class="data-item">
+                <span class="data-label">Base Zone</span>
+                <span class="data-value" id="rZoning">—</span>
+              </div>
+              <div class="data-item">
+                <span class="data-label">Overlay</span>
+                <span class="data-value" id="rOverlay">—</span>
+              </div>
+              <div class="data-item">
+                <span class="data-label">Max Height</span>
+                <span class="data-value" id="rHeight">—</span>
+              </div>
+              <div class="data-item">
+                <span class="data-label">Historic</span>
+                <span class="data-value" id="rHistoric">—</span>
+              </div>
+            </div>
           </div>
-          <div class="data-item">
-            <div class="data-label">Max Height</div>
-            <div class="data-value" id="rHeight">—</div>
+
+          <div class="card">
+            <h2>Flood</h2>
+            <div class="data-grid">
+              <div class="data-item">
+                <span class="data-label">FEMA Zone</span>
+                <span class="data-value" id="rFlood">—</span>
+              </div>
+              <div class="data-item">
+                <span class="data-label">Risk</span>
+                <span class="data-value" id="rRisk">—</span>
+              </div>
+              <div class="data-item">
+                <span class="data-label">Impact</span>
+                <span class="data-value" id="rImpact">—</span>
+              </div>
+              <div class="data-item">
+                <span class="data-label">Est Cost</span>
+                <span class="data-value" id="rCost">—</span>
+              </div>
+            </div>
           </div>
-          <div class="data-item">
-            <div class="data-label">Historic District</div>
-            <div class="data-value" id="rHistoric">—</div>
+
+          <div class="card">
+            <h2>Permitted Uses</h2>
+            <span class="data-label">By Right</span>
+            <div class="data-value" id="rUsesByRight" style="margin-bottom: 12px;">—</div>
+            <span class="data-label">Max Density</span>
+            <div class="data-value" id="rDensity">—</div>
+          </div>
+
+          <div class="card">
+            <h2>Summary</h2>
+            <p class="summary-text" id="rSummary">—</p>
+          </div>
+
+          <div class="card">
+            <h2>Sources</h2>
+            <div class="links-row" id="rLinks"></div>
           </div>
         </div>
-      </div>
-
-      <div class="result-section">
-        <h2>Flood Zone</h2>
-        <div class="data-grid">
-          <div class="data-item">
-            <div class="data-label">FEMA Zone</div>
-            <div class="data-value" id="rFlood">—</div>
-          </div>
-          <div class="data-item">
-            <div class="data-label">Risk Level</div>
-            <div class="data-value" id="rRisk">—</div>
-          </div>
-          <div class="data-item">
-            <div class="data-label">Construction Impact</div>
-            <div class="data-value" id="rImpact">—</div>
-          </div>
-          <div class="data-item">
-            <div class="data-label">Est. Added Cost</div>
-            <div class="data-value" id="rCost">—</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="result-section">
-        <h2>Permitted Uses</h2>
-        <div class="data-item">
-          <div class="data-label">By Right</div>
-          <div class="data-value" id="rUsesByRight">—</div>
-        </div>
-        <div class="data-item" style="margin-top: 12px;">
-          <div class="data-label">Max Density</div>
-          <div class="data-value" id="rDensity">—</div>
-        </div>
-      </div>
-
-      <div class="result-section">
-        <h2>Summary</h2>
-        <p id="rSummary">—</p>
-      </div>
-
-      <div class="result-section">
-        <h2>Official Sources</h2>
-        <div class="links-row" id="rLinks"></div>
       </div>
     </div>
   </div>
@@ -271,7 +284,6 @@
 
         const data = await response.json();
 
-        // Populate results
         document.getElementById('rTMS').textContent = data.parcel?.tms || '—';
         document.getElementById('rAcreage').textContent = data.parcel?.acreage || '—';
         document.getElementById('rLotSize').textContent = data.parcel?.lotSizeSqFt || '—';
@@ -292,7 +304,7 @@
         document.getElementById('rLinks').innerHTML = [
           ['County GIS', links.countyGIS],
           ['City Zoning', links.cityZoning],
-          ['FEMA Flood', links.femaFlood],
+          ['FEMA', links.femaFlood],
           ['Municode', links.municode]
         ].map(([label, href]) => `<a href="${href}" target="_blank" rel="noopener" class="ext-link">↗ ${label}</a>`).join('');
 
