@@ -4,16 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VARNIK Deal Analyzer</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap" rel="css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0d0f0e;
-      --surface: #141714;
-      --border: #2a2d2a;
-      --text: #e8e9e8;
-      --muted: #8a8d8a;
-      --accent: #7c3aed;
-      --card: #1a1d1a;
+      --bg: #0a0a0a;
+      --surface: #1a1a1a;
+      --border: #2a2a2a;
+      --text: #ffffff;
+      --muted: #666666;
+      --accent: #ccff00;
+      --accent-dark: #a3cc00;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; }
@@ -21,304 +21,142 @@
       background: var(--bg);
       color: var(--text);
       font-family: 'DM Mono', monospace;
-      font-size: 13px;
-      line-height: 1.5;
-      overflow: hidden;
+      font-size: 14px;
+      line-height: 1.6;
     }
-    .container { display: flex; height: 100vh; flex-direction: column; }
-    header {
-      padding: 24px 32px;
+    .hero {
+      min-height: 100vh;
+      padding: 60px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    }
+    .navbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       border-bottom: 1px solid var(--border);
-      background: var(--bg);
     }
-    h1 {
+    .logo {
       font-family: 'Playfair Display', serif;
-      font-size: 2rem;
+      font-size: 20px;
+      font-weight: 700;
       color: var(--accent);
-      margin-bottom: 4px;
     }
-    .subtitle { color: var(--muted); font-size: 12px; }
-    .main { display: flex; flex: 1; gap: 24px; padding: 24px 32px; overflow: hidden; }
-    .panel { display: flex; flex-direction: column; }
-    .search-panel { flex: 0 0 300px; }
-    .results-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-    .search-box {
+    .nav-right {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .hero-content { max-width: 800px; margin-bottom: 60px; }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
+    .hero-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-style: italic;
+      margin-bottom: 30px;
+    }
+    .hero-desc {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+      margin-bottom: 40px;
+    }
+    .search-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 40px;
+      border-radius: 4px;
+      max-width: 700px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .search-label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .search-input-group {
       display: flex;
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
     input {
       flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: transparent;
+      border: none;
       color: var(--text);
-      padding: 12px;
       font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      border-radius: 2px;
+      font-size: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
     }
     input::placeholder { color: var(--muted); }
-    button {
+    input:focus { outline: none; border-bottom-color: var(--accent); }
+    .analyze-btn {
       background: var(--accent);
-      color: white;
+      color: #000;
       border: none;
-      padding: 12px 20px;
+      padding: 12px 24px;
       font-family: 'DM Mono', monospace;
       font-size: 12px;
+      font-weight: 600;
       cursor: pointer;
       border-radius: 2px;
-      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      transition: all 0.2s;
     }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-    button:hover:not(:disabled) { background: #6d28d9; }
+    .analyze-btn:hover:not(:disabled) { background: var(--accent-dark); }
+    .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .search-hint {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: left;
+    }
+    .footer-text {
+      position: absolute;
+      bottom: 40px;
+      left: 40px;
+      right: 40px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 600px;
+    }
     .loading { display: none; text-align: center; padding: 40px 20px; }
     .loading.active { display: block; }
     .spinner {
       border: 2px solid var(--border);
       border-top: 2px solid var(--accent);
       border-radius: 50%;
-      width: 32px;
-      height: 32px;
+      width: 40px;
+      height: 40px;
       animation: spin 1s linear infinite;
-      margin: 0 auto 12px;
+      margin: 0 auto 16px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .error { display: none; background: rgba(239,68,68,0.1); border: 1px solid #ef4444; padding: 16px; border-radius: 2px; color: #fca5a5; font-size: 12px; }
+    .error { display: none; background: rgba(255,0,0,0.1); border: 1px solid #ff4444; padding: 16px; margin: 20px auto; max-width: 600px; border-radius: 2px; color: #ff8888; font-size: 13px; }
     .error.active { display: block; }
-    .results { display: none; overflow-y: auto; }
-    .results.active { display: block; }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      padding: 20px;
-      margin-bottom: 16px;
-      border-radius: 2px;
-    }
-    .card h2 {
-      font-size: 13px;
-      color: var(--accent);
-      margin-bottom: 16px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .data-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-    .data-item { }
-    .data-label {
-      color: var(--muted);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
-      display: block;
-    }
-    .data-value {
-      color: var(--text);
-      font-size: 13px;
-      word-break: break-word;
-    }
-    .summary-text {
-      font-size: 13px;
-      line-height: 1.6;
-      color: var(--text);
-    }
-    .links-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .ext-link {
-      color: var(--accent);
-      text-decoration: none;
-      font-size: 11px;
-      padding: 6px 12px;
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      transition: all 0.2s;
-    }
-    .ext-link:hover {
-      background: rgba(124,58,237,0.1);
-      border-color: var(--accent);
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <header>
-      <h1>⚡ VARNIK</h1>
-      <p class="subtitle">Deal Analyzer — Charleston, SC</p>
-    </header>
-
-    <div class="main">
-      <div class="search-panel">
-        <div class="search-box">
-          <input type="text" id="addressInput" placeholder="9 Maranda Holmes St..." />
-          <button id="analyzeBtn" onclick="analyzeDeal()">Go</button>
-        </div>
-        <div class="loading" id="loadingState">
-          <div class="spinner"></div>
-          <p>Searching...</p>
-        </div>
-        <div class="error" id="errorState"></div>
-      </div>
-
-      <div class="results-panel">
-        <div class="results" id="results">
-          <div class="card">
-            <h2>Parcel</h2>
-            <div class="data-grid">
-              <div class="data-item">
-                <span class="data-label">TMS</span>
-                <span class="data-value" id="rTMS">—</span>
-              </div>
-              <div class="data-item">
-                <span class="data-label">Acreage</span>
-                <span class="data-value" id="rAcreage">—</span>
-              </div>
-              <div class="data-item">
-                <span class="data-label">Sq Ft</span>
-                <span class="data-value" id="rLotSize">—</span>
-              </div>
-              <div class="data-item">
-                <span class="data-label">County Use</span>
-                <span class="data-value" id="rCountyUse">—</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Zoning</h2>
-            <div class="data-grid">
-              <div class="data-item">
-                <span class="data-label">Base Zone</span>
-                <span class="data-value" id="rZoning">—</span>
-              </div>
-              <div class="data-item">
-                <span class="data-label">Overlay</span>
-                <span class="data-value" id="rOverlay">—</span>
-              </div>
-              <div class="data-item">
-                <span class="data-label">Max Height</span>
-                <span class="data-value" id="rHeight">—</span>
-              </div>
-              <div class="data-item">
-                <span class="data-label">Historic</span>
-                <span class="data-value" id="rHistoric">—</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Flood</h2>
-            <div class="data-grid">
-              <div class="data-item">
-                <span class="data-label">FEMA Zone</span>
-                <span class="data-value" id="rFlood">—</span>
-              </div>
-              <div class="data-item">
-                <span class="data-label">Risk</span>
-                <span class="data-value" id="rRisk">—</span>
-              </div>
-              <div class="data-item">
-                <span class="data-label">Impact</span>
-                <span class="data-value" id="rImpact">—</span>
-              </div>
-              <div class="data-item">
-                <span class="data-label">Est Cost</span>
-                <span class="data-value" id="rCost">—</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <h2>Permitted Uses</h2>
-            <span class="data-label">By Right</span>
-            <div class="data-value" id="rUsesByRight" style="margin-bottom: 12px;">—</div>
-            <span class="data-label">Max Density</span>
-            <div class="data-value" id="rDensity">—</div>
-          </div>
-
-          <div class="card">
-            <h2>Summary</h2>
-            <p class="summary-text" id="rSummary">—</p>
-          </div>
-
-          <div class="card">
-            <h2>Sources</h2>
-            <div class="links-row" id="rLinks"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const BACKEND_URL = 'https://deal-analyzer-backend-production.up.railway.app/api/analyze';
-
-    async function analyzeDeal() {
-      const address = document.getElementById('addressInput').value.trim();
-      if (!address) {
-        document.getElementById('addressInput').focus();
-        return;
-      }
-
-      document.getElementById('results').classList.remove('active');
-      document.getElementById('errorState').classList.remove('active');
-      document.getElementById('loadingState').classList.add('active');
-      document.getElementById('analyzeBtn').disabled = true;
-
-      try {
-        const response = await fetch(BACKEND_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ address })
-        });
-
-        if (!response.ok) {
-          throw new Error(`Server error: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        document.getElementById('rTMS').textContent = data.parcel?.tms || '—';
-        document.getElementById('rAcreage').textContent = data.parcel?.acreage || '—';
-        document.getElementById('rLotSize').textContent = data.parcel?.lotSizeSqFt || '—';
-        document.getElementById('rCountyUse').textContent = data.parcel?.countyUse || '—';
-        document.getElementById('rZoning').textContent = data.zoning?.designation || '—';
-        document.getElementById('rOverlay').textContent = data.zoning?.overlayDistrict || '—';
-        document.getElementById('rHeight').textContent = data.zoning?.maxHeight || '—';
-        document.getElementById('rHistoric').textContent = data.zoning?.historicDistrict || '—';
-        document.getElementById('rFlood').textContent = data.flood?.femaZone || '—';
-        document.getElementById('rRisk').textContent = data.flood?.riskLevel || '—';
-        document.getElementById('rImpact').textContent = data.flood?.constructionImpact || '—';
-        document.getElementById('rCost').textContent = data.flood?.estimatedAddedCost || '—';
-        document.getElementById('rUsesByRight').textContent = (data.permittedUses?.byRight || []).join(', ') || '—';
-        document.getElementById('rDensity').textContent = data.permittedUses?.maxDensity || '—';
-        document.getElementById('rSummary').textContent = data.summary || '—';
-
-        const links = data.directLinks || {};
-        document.getElementById('rLinks').innerHTML = [
-          ['County GIS', links.countyGIS],
-          ['City Zoning', links.cityZoning],
-          ['FEMA', links.femaFlood],
-          ['Municode', links.municode]
-        ].map(([label, href]) => `<a href="${href}" target="_blank" rel="noopener" class="ext-link">↗ ${label}</a>`).join('');
-
-        document.getElementById('loadingState').classList.remove('active');
-        document.getElementById('results').classList.add('active');
-
-      } catch (error) {
-        document.getElementById('loadingState').classList.remove('active');
-        document.getElementById('errorState').classList.add('active');
-        document.getElementById('errorState').textContent = `Error: ${error.message}`;
-      } finally {
-        document.getElementById('analyzeBtn').disabled = false;
-      }
-    }
-  </script>
-</body>
-</html>
+    .results-cont
