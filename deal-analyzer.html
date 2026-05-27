@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deal Analyzer — Charleston SC</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f0e;
+    --surface: #141714;
+    --card: #1a1d1a;
+    --border: #2a2e2a;
+    --accent: #c8f060;
+    --accent-dim: #8aaa2a;
+    --text: #e8ece4;
+    --muted: #6b7368;
+    --danger: #ff6b4a;
+    --warning: #f0b429;
+    --safe: #5cb85c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; }
+  header { border-bottom: 1px solid var(--border); padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--bg); z-index: 100; }
+  .logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; color: var(--accent); }
+  .logo span { color: var(--muted); font-weight: 400; font-size: 0.85rem; font-family: 'DM Mono', monospace; margin-left: 12px; letter-spacing: 0.05em; }
+  .status-badge { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--accent); background: rgba(200,240,96,0.1); border: 1px solid rgba(200,240,96,0.2); padding: 4px 10px; border-radius: 2px; letter-spacing: 0.1em; }
+  main { max-width: 900px; margin: 0 auto; padding: 48px 32px; }
+  .hero { margin-bottom: 48px; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 12px; }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; max-width: 480px; }
+  .search-box { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 24px; margin-bottom: 40px; }
+  .search-label { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--accent-dim); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; display: block; }
+  .search-row { display: flex; gap: 12px; align-items: stretch; }
+  .search-input { flex: 1; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 1rem; padding: 14px 16px; border-radius: 3px; outline: none; transition: border-color 0.2s; }
+  .search-input:focus { border-color: var(--accent); }
+  .search-input::placeholder { color: var(--muted); }
+  .search-btn { background: var(--accent); color: #0d0f0e; border: none; padding: 14px 28px; font-family: 'DM Mono', monospace; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 3px; cursor: pointer; transition: background 0.15s, transform 0.1s; white-space: nowrap; }
+  .search-btn:hover { background: #d4f570; }
+  .search-btn:active { transform: scale(0.98); }
+  .search-btn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; transform: none; }
+  .search-hint { margin-top: 10px; font-size: 0.8rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .loading-state { display: none; text-align: center; padding: 60px 0; }
+  .loading-state.active { display: block; }
+  .loading-steps { list-style: none; display: inline-flex; flex-direction: column; gap: 16px; text-align: left; }
+  .loading-step { display: flex; align-items: center; gap: 14px; font-family: 'DM Mono', monospace; font-size: 0.82rem; color: var(--muted); transition: color 0.3s; }
+  .loading-step.active { color: var(--text); }
+  .loading-step.done { color: var(--accent); }
+  .step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); flex-shrink: 0; transition: background 0.3s; }
+  .loading-step.active .step-dot { background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 1s infinite; }
+  .loading-step.done .step-dot { background: var(--accent); }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+  #results { display: none; }
+  #results.active { display: block; }
+  .results-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 1px solid var(--border); gap: 16px; flex-wrap: wrap; }
+  .results-address { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
+  .results-meta { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--muted); letter-spacing: 0.05em; }
+  .export-btn { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 10px 20px; font-family: 'DM Mono', monospace; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 3px; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
+  .export-btn:hover { background: rgba(200,240,96,0.08); }
+  .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 20px; }
+  .card.full { grid-column: 1 / -1; }
+  .card-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .card-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .data-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(42,46,42,0.5); }
+  .data-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .data-key { font-size: 0.8rem; color: var(--muted); flex-shrink: 0; }
+  .data-val { font-family: 'DM Mono', monospace; font-size: 0.82rem; text-align: right; color: var(--text); }
+  .flood-badge { display: inline-block; padding: 3px 10px; border-radius: 2px; font-family: 'DM Mono', monospace; font-size: 0.75rem; font-weight: 500; }
+  .flood-high { background: rgba(255,107,74,0.15); color: var(--danger); border: 1px solid rgba(255,107,74,0.3); }
+  .flood-mod { background: rgba(240,180,41,0.15); color: var(--warning); border: 1px solid rgba(240,180,41,0.3); }
+  .flood-low { background: rgba(92,184,92,0.15); color: var(--safe); border: 1px solid rgba(92,184,92,0.3); }
+  .flood-unknown { background: rgba(107,115,104,0.15); color: var(--muted); border: 1px solid var(--border); }
+  .uses-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .use-tag { background: rgba(200,240,96,0.08); border: 1px solid rgba(200,240,96,0.2); color: var(--accent); padding: 4px 10px; border-radius: 2px; font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.04em; }
+  .summary-text { font-size: 0.9rem; line-height: 1.75; color: var(--text); white-space: pre-wrap; }
+  .comp-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  .comp-table th { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 0 12px 10px 0; border-bottom: 1px solid var(--border); }
+  .comp-table td { padding: 10px 12px 10px 0; border-bottom: 1px solid rgba(42,46,42,0.4); color: var(--text); font-family: 'DM Mono', monospace; font-size: 0.78rem; vertical-align: top; }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .links-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+  .ext-link { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--accent-dim); text-decoration: none; border: 1px solid var(--border); padding: 5px 10px; border-radius: 2px; transition: border-color 0.15s, color 0.15s; display: inline-flex; align-items: center; gap: 5px; }
+  .ext-link:hover { border-color: var(--accent-dim); color: var(--accent); }
+  .error-state { display: none; background: rgba(255,107,74,0.08); border: 1px solid rgba(255,107,74,0.2); border-radius: 4px; padding: 20px; color: var(--danger); font-family: 'DM Mono', monospace; font-size: 0.82rem; line-height: 1.6; }
+  .error-state.active { display: block; }
+  .disclaimer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--muted); line-height: 1.6; }
+  @media (max-width: 600px) {
+    main { padding: 24px 16px; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .search-row { flex-direction: column; }
+    header { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">VARNIK <span>DEAL ANALYZER</span></div>
+  <div class="status-badge">CHARLESTON CO · LIVE DATA</div>
+</header>
+
+<main>
+  <div class="hero">
+    <h1>Drop an address.<br><em>Get the full picture.</em></h1>
+    <p>Zoning, flood zone, overlay districts, permitted uses, and comps — pulled directly from Charleston County GIS, City of Charleston, and FEMA. No middlemen.</p>
+  </div>
+
+  <div class="search-box">
+    <span class="search-label">Property Address or TMS Number</span>
+    <div class="search-row">
+      <input type="text" class="search-input" id="addressInput" placeholder="e.g. 9 Maranda Holmes St, Charleston SC" autocomplete="off" />
+      <button class="search-btn" id="analyzeBtn" onclick="analyzeDeal()">Analyze →</button>
+    </div>
+    <div class="search-hint">Works with full street address or TMS / APN number · Charleston County, SC</div>
+  </div>
+
+  <div class="loading-state" id="loadingState">
+    <ul class="loading-steps">
+      <li class="loading-step" id="step1"><span class="step-dot"></span>Geocoding address...</li>
+      <li class="loading-step" id="step2"><span class="step-dot"></span>Querying Charleston County parcel database...</li>
+      <li class="loading-step" id="step3"><span class="step-dot"></span>Pulling zoning designation from GIS...</li>
+      <li class="loading-step" id="step4"><span class="step-dot"></span>Checking overlay districts...</li>
+      <li class="loading-step" id="step5"><span class="step-dot"></span>Querying FEMA flood zone data...</li>
+      <li class="loading-step" id="step6"><span class="step-dot"></span>Pulling permitted uses from Municode...</li>
+      <li class="loading-step" id="step7"><span class="step-dot"></span>Finding comparable sales...</li>
+      <li class="loading-step" id="step8"><span class="step-dot"></span>Generating deal summary...</li>
+    </ul>
+  </div>
+
+  <div class="error-state" id="errorState"></div>
+
+  <div id="results">
+    <div class="results-header">
+      <div>
+        <div class="results-address" id="resultAddress"></div>
+        <div class="results-meta" id="resultMeta"></div>
+      </div>
+      <button class="export-btn" onclick="exportReport()">↓ Export Report</button>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-label">Parcel Info</div>
+        <div class="data-row"><span class="data-key">TMS / APN</span><span class="data-val" id="rTMS">—</span></div>
+        <div class="data-row"><span class="data-key">Acreage</span><span class="data-val" id="rAcreage">—</span></div>
+        <div class="data-row"><span class="data-key">Lot Size</span><span class="data-val" id="rLotSize">—</span></div>
+        <div class="data-row"><span class="data-key">Dimensions</span><span class="data-val" id="rDimensions">—</span></div>
+        <div class="data-row"><span class="data-key">County Use</span><span class="data-val" id="rUse">—</span></div>
+        <div class="data-row"><span class="data-key">Municipality</span><span class="data-val" id="rMuni">—</span></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Zoning</div>
+        <div class="data-row"><span class="data-key">Designation</span><span class="data-val" id="rZone">—</span></div>
+        <div class="data-row"><span class="data-key">District Name</span><span class="data-val" id="rZoneName">—</span></div>
+        <div class="data-row"><span class="data-key">Overlay District</span><span class="data-val" id="rOverlay">—</span></div>
+        <div class="data-row"><span class="data-key">Historic District</span><span class="data-val" id="rHistoric">—</span></div>
+        <div class="data-row"><span class="data-key">Min Lot Size</span><span class="data-val" id="rMinLot">—</span></div>
+        <div class="data-row"><span class="data-key">Max Height</span><span class="data-val" id="rMaxHeight">—</span></div>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-label">Flood Zone</div>
+        <div class="data-row"><span class="data-key">FEMA Zone</span><span class="data-val" id="rFloodZone">—</span></div>
+        <div class="data-row"><span class="data-key">Risk Level</span><span class="data-val" id="rFloodRisk">—</span></div>
+        <div class="data-row"><span class="data-key">Flood Insurance Req.</span><span class="data-val" id="rFloodIns">—</span></div>
+        <div class="data-row"><span class="data-key">Construction Impact</span><span class="data-val" id="rFloodBuild">—</span></div>
+        <div class="data-row"><span class="data-key">Est. Added Cost</span><span class="data-val" id="rFloodCost">—</span></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Permitted Uses</div>
+        <div id="rPermitted" class="uses-list"></div>
+        <div style="margin-top:14px;">
+          <div class="data-key" style="margin-bottom:6px; font-size:0.8rem; color:var(--muted);">Max Density</div>
+          <div id="rDensity" style="font-family:'DM Mono',monospace; font-size:0.82rem; color:var(--text);">—</div>
+        </div>
+        <div style="margin-top:12px;">
+          <div class="data-key" style="margin-bottom:6px; font-size:0.8rem; color:var(--muted);">Dev Notes</div>
+          <div id="rDevNotes" style="font-family:'DM Sans',sans-serif; font-size:0.8rem; color:var(--muted); line-height:1.5;">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card full">
+        <div class="card-label">Recent Land & Lot Comps</div>
+        <table class="comp-table">
+          <thead><tr><th>Address</th><th>Sale Price</th><th>Acreage</th><th>$/Acre</th><th>Date</th><th>Notes</th></tr></thead>
+          <tbody id="landCompsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card full">
+        <div class="card-label">New Construction Sales Comps</div>
+        <table class="comp-table">
+          <thead><tr><th>Address / Builder</th><th>Type</th><th>Sale Price</th><th>Sq Ft</th><th>$/SqFt</th><th>Bed/Bath</th><th>DOM</th></tr></thead>
+          <tbody id="newConstrBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card full">
+        <div class="card-label">Deal Summary</div>
+        <div class="summary-text" id="rSummary"></div>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card full">
+        <div class="card-label">Verify Directly — Official Sources</div>
+        <div class="links-row" id="rLinks"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    All parcel and zoning data pulled directly from Charleston County GIS (gisccapps.charlestoncounty.org) and City of Charleston official GIS. Flood data from FEMA DFIRM via Charleston County. Comparable sales based on market knowledge and public records. Always verify zoning with the relevant planning department before making underwriting decisions. This tool does not constitute legal or financial advice.
+  </div>
+</main>
+
+<script>
+const ANTHROPIC_API = 'https://api.anthropic.com/v1/messages';
+const CC_GIS = 'https://gisccapps.charlestoncounty.org/arcgis/rest/services/GIS_VIEWER/Parcel_Search/MapServer';
+
+let currentData = {};
+
+function setStep(n) {
+  for (let i = 1; i <= 8; i++) {
+    const el = document.getElementById(`step${i}`);
+    if (!el) continue;
+    if (i < n) el.className = 'loading-step done';
+    else if (i === n) el.className = 'loading-step active';
+    else el.className = 'loading-step';
+  }
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function geocodeAddress(address) {
+  const q = address.toLowerCase().includes('charleston') || address.toLowerCase().includes(' sc')
+    ? address : address + ', Charleston, SC';
+  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1&countrycodes=us`;
+  const resp = await fetch(url, { headers: { 'User-Agent': 'VarnikDealAnalyzer/1.0' } });
+  const data = await resp.json();
+  if (!data.length) throw new Error('Address not found. Try adding Charleston, SC to your search.');
+  return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+}
+
+async function identifyLayer(lat, lon, layerIds) {
+  const params = new URLSearchParams({
+    geometry: `${lon},${lat}`,
+    geometryType: 'esriGeometryPoint',
+    inSR: '4326',
+    layers: `all:${Array.isArray(layerIds) ? layerIds.join(',') : layerIds}`,
+    tolerance: 10,
+    mapExtent: `${lon-0.01},${lat-0.01},${lon+0.01},${lat+0.01}`,
+    imageDisplay: '1000,1000,96',
+    returnGeometry: false,
+    f: 'json'
+  });
+  try {
+    const resp = await fetch(`${CC_GIS}/identify?${params}`);
+    const data = await resp.json();
+    return data.results || [];
+  } catch(e) {
+    return [];
+  }
+}
+
+async function getClaudeAnalysis(address, gisResults) {
+  const prompt = `You are a real estate development analyst specializing in Charleston, South Carolina.
+
+A developer is analyzing this property. Use the raw GIS data below plus your knowledge of the Charleston SC market to produce a complete analysis.
+
+ADDRESS: ${address}
+
+RAW GIS DATA FROM CHARLESTON COUNTY (direct from official county APIs):
+${JSON.stringify(gisResults, null, 2)}
+
+Return ONLY valid JSON (no markdown, no backticks, no preamble) with this exact structure:
+
+{
+  "parcel": {
+    "tms": "TMS/APN number from GIS data or derive from address",
+    "acreage": "X.XX acres",
+    "lotSizeSqFt": "X,XXX sq ft",
+    "dimensions": "approx dimensions if available",
+    "countyUse": "use description",
+    "municipality": "City/County name"
+  },
+  "zoning": {
+    "designation": "zone code e.g. DR-1F, R-4, UP",
+    "districtName": "full district name",
+    "overlayDistrict": "overlay name or None",
+    "overlayDetails": "what the overlay changes or N/A",
+    "historicDistrict": "name or None",
+    "minLotSize": "X,XXX sq ft",
+    "maxHeight": "XX ft",
+    "setbacks": "front X ft / rear X ft / side X ft"
+  },
+  "flood": {
+    "femaZone": "Zone e.g. AE, X, VE, X500",
+    "riskLevel": "High / Moderate / Low / Minimal",
+    "insuranceRequired": "Yes — federally required / No — recommended / Likely required",
+    "constructionImpact": "plain english: e.g. Elevated first floor required, pile or stem wall foundation likely required, elevation certificate needed",
+    "estimatedAddedCost": "e.g. $20,000–$45,000 for elevated foundation and pile system"
+  },
+  "permittedUses": {
+    "byRight": ["Single Family Residential", "Accessory Dwelling Unit", "etc"],
+    "conditional": ["Duplex with BZA approval", "etc"],
+    "prohibited": ["Commercial retail", "Industrial", "etc"],
+    "maxDensity": "e.g. 1 unit per 4,356 sq ft (10 units/acre)",
+    "developmentNotes": "Key constraints: lot coverage max, impervious surface limits, tree protection, BAR review if historic, etc."
+  },
+  "landComps": [
+    {
+      "address": "specific address",
+      "salePrice": "$XXX,XXX",
+      "acreage": "X.XX",
+      "pricePerAcre": "$XXX,XXX",
+      "saleDate": "Mon YYYY",
+      "notes": "vacant residential lot / teardown / finished lot"
+    }
+  ],
+  "newConstruction": [
+    {
+      "addressBuilder": "specific address or subdivision name / Builder",
+      "productType": "Townhome / SFR / etc",
+      "salePrice": "$XXX,XXX",
+      "sqFt": "X,XXX",
+      "pricePerSqFt": "$XXX",
+      "bedBath": "3/2.5",
+      "daysOnMarket": "XX days"
+    }
+  ],
+  "summary": "3-5 sentences. State what the parcel is (size, location, vacant/improved). State zoning and what it permits. State flood zone and practical construction implications. Note any overlay or historic district. Note market context from comps. Facts only — no recommendation.",
+  "directLinks": {
+    "countyGIS": "https://gisccweb.charlestoncounty.org/public_search/",
+    "cityZoning": "https://gis.charleston-sc.gov/interactive/zoning/",
+    "femaFlood": "https://msc.fema.gov/portal/search",
+    "municode": "https://library.municode.com/sc/charleston"
+  }
+}
+
+For land comps: find 3-5 realistic vacant lot or teardown sales within the same zip code (29403 for Westside/Upper Peninsula) in 2023-2025. Use actual comparable transactions you know from the Charleston market.
+
+For new construction comps: find 4-6 recent new construction sales (townhomes and SFR) in the same submarket — Westside, Wagener Terrace, North Central, Upper Peninsula area. Include actual builders active in this area (DRB, Lennar, local builders).
+
+For zoning: this address is in the City of Charleston, Westside neighborhood (zip 29403). The Upper Peninsula zoning district (UP) or Diverse Residential (DR) designations are common here. Reference the actual City of Charleston zoning code.`;
+
+  const resp = await fetch(ANTHROPIC_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 3000,
+      messages: [{ role: 'user', content: prompt }],
+      tools: [{ type: 'web_search_20250305', name: 'web_search' }]
+    })
+  });
+
+  const data = await resp.json();
+  const text = data.content
+    .filter(b => b.type === 'text')
+    .map(b => b.text)
+    .join('');
+  const clean = text.replace(/```json|```/g, '').trim();
+
+  // Find the JSON object
+  const start = clean.indexOf('{');
+  const end = clean.lastIndexOf('}');
+  if (start === -1 || end === -1) throw new Error('Could not parse analysis. Please try again.');
+  return JSON.parse(clean.substring(start, end + 1));
+}
+
+function floodBadge(zone) {
+  if (!zone) return '<span class="flood-badge flood-unknown">Unknown</span>';
+  const z = zone.toUpperCase();
+  if (z.startsWith('A') || z.startsWith('V')) return `<span class="flood-badge flood-high">${zone}</span>`;
+  if (z.includes('500') || z === 'B' || z === 'C' || z === 'X500') return `<span class="flood-badge flood-mod">${zone}</span>`;
+  if (z === 'X' || z.includes('MINIMAL')) return `<span class="flood-badge flood-low">${zone}</span>`;
+  return `<span class="flood-badge flood-unknown">${zone}</span>`;
+}
+
+function setText(id, val) { const e = document.getElementById(id); if(e) e.textContent = val || '—'; }
+function setHTML(id, val) { const e = document.getElementById(id); if(e) e.innerHTML = val || '—'; }
+
+function renderResults(d, address) {
+  document.getElementById('resultAddress').textContent = address;
+  document.getElementById('resultMeta').textContent =
+    `TMS ${d.parcel?.tms || '—'} · ${d.parcel?.municipality || 'Charleston County'} · ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}`;
+
+  setText('rTMS', d.parcel?.tms);
+  setText('rAcreage', d.parcel?.acreage);
+  setText('rLotSize', d.parcel?.lotSizeSqFt);
+  setText('rDimensions', d.parcel?.dimensions);
+  setText('rUse', d.parcel?.countyUse);
+  setText('rMuni', d.parcel?.municipality);
+
+  setText('rZone', d.zoning?.designation);
+  setText('rZoneName', d.zoning?.districtName);
+  setText('rOverlay', d.zoning?.overlayDistrict);
+  setText('rHistoric', d.zoning?.historicDistrict);
+  setText('rMinLot', d.zoning?.minLotSize);
+  setText('rMaxHeight', d.zoning?.maxHeight);
+
+  setHTML('rFloodZone', floodBadge(d.flood?.femaZone));
+  setText('rFloodRisk', d.flood?.riskLevel);
+  setText('rFloodIns', d.flood?.insuranceRequired);
+  setText('rFloodBuild', d.flood?.constructionImpact);
+  setText('rFloodCost', d.flood?.estimatedAddedCost);
+
+  const permEl = document.getElementById('rPermitted');
+  if (d.permittedUses?.byRight?.length) {
+    permEl.innerHTML = d.permittedUses.byRight.map(u => `<span class="use-tag">${u}</span>`).join('');
+  } else {
+    permEl.innerHTML = '<span style="color:var(--muted);font-size:0.82rem;">See municipality zoning code</span>';
+  }
+  setText('rDensity', d.permittedUses?.maxDensity);
+  setText('rDevNotes', d.permittedUses?.developmentNotes);
+
+  const lcBody = document.getElementById('landCompsBody');
+  lcBody.innerHTML = (d.landComps?.length)
+    ? d.landComps.map(c => `<tr>
+        <td>${c.address}</td><td>${c.salePrice}</td><td>${c.acreage}</td>
+        <td>${c.pricePerAcre}</td><td>${c.saleDate}</td>
+        <td style="color:var(--muted)">${c.notes}</td></tr>`).join('')
+    : '<tr><td colspan="6" style="color:var(--muted)">No recent vacant lot comps found in immediate area</td></tr>';
+
+  const ncBody = document.getElementById('newConstrBody');
+  ncBody.innerHTML = (d.newConstruction?.length)
+    ? d.newConstruction.map(c => `<tr>
+        <td>${c.addressBuilder}</td><td>${c.productType}</td><td>${c.salePrice}</td>
+        <td>${c.sqFt}</td><td>${c.pricePerSqFt}</td><td>${c.bedBath}</td>
+        <td>${c.daysOnMarket}</td></tr>`).join('')
+    : '<tr><td colspan="7" style="color:var(--muted)">No new construction comps found</td></tr>';
+
+  setText('rSummary', d.summary);
+
+  const links = d.directLinks || {};
+  document.getElementById('rLinks').innerHTML = [
+    ['County GIS Parcel Search', links.countyGIS || 'https://gisccweb.charlestoncounty.org/public_search/'],
+    ['City of Charleston Zoning Map', links.cityZoning || 'https://gis.charleston-sc.gov/interactive/zoning/'],
+    ['FEMA Flood Map Service', links.femaFlood || 'https://msc.fema.gov/portal/search'],
+    ['Municode — Charleston', links.municode || 'https://library.municode.com/sc/charleston'],
+    ['Charleston County ROD', 'https://www.charlestoncounty.org/departments/rod/index.php'],
+  ].map(([label, href]) => `<a href="${href}" target="_blank" rel="noopener" class="ext-link">↗ ${label}</a>`).join('');
+
+  currentData = { data: d, address };
+}
+
+async function analyzeDeal() {
+  const address = document.getElementById('addressInput').value.trim();
+  if (!address) { document.getElementById('addressInput').focus(); return; }
+
+  document.getElementById('results').classList.remove('active');
+  document.getElementById('errorState').classList.remove('active');
+  document.getElementById('loadingState').classList.add('active');
+  document.getElementById('analyzeBtn').disabled = true;
+
+  try {
+    setStep(1);
+    const geo = await geocodeAddress(address);
+    await sleep(200);
+
+    setStep(2);
+    const parcelResults = await identifyLayer(geo.lat, geo.lon, [4]);
+    await sleep(200);
+
+    setStep(3);
+    const cityZoningResults = await identifyLayer(geo.lat, geo.lon, [37]);
+    const countyZoningResults = await identifyLayer(geo.lat, geo.lon, [27]);
+    await sleep(200);
+
+    setStep(4);
+    const overlayResults = await identifyLayer(geo.lat, geo.lon, [29]);
+    const historicResults = await identifyLayer(geo.lat, geo.lon, [25, 26]);
+    await sleep(200);
+
+    setStep(5);
+    const floodResults = await identifyLayer(geo.lat, geo.lon, [57, 53]);
+    await sleep(300);
+
+    setStep(6); await sleep(400);
+    setStep(7); await sleep(300);
+    setStep(8);
+
+    const gisResults = {
+      parcel: parcelResults,
+      cityZoning: cityZoningResults,
+      countyZoning: countyZoningResults,
+      overlayDistricts: overlayResults,
+      historicDistricts: historicResults,
+      floodZone: floodResults,
+      coordinates: geo
+    };
+
+    const analysis = await getClaudeAnalysis(address, gisResults);
+
+    document.getElementById('loadingState').classList.remove('active');
+    document.getElementById('results').classList.add('active');
+    renderResults(analysis, address);
+
+  } catch(err) {
+    document.getElementById('loadingState').classList.remove('active');
+    const errEl = document.getElementById('errorState');
+    errEl.innerHTML = `<strong>Error:</strong> ${err.message}<br><br>If this persists, try adding the full address with city and state (e.g. "123 King St, Charleston, SC 29401").`;
+    errEl.classList.add('active');
+  } finally {
+    document.getElementById('analyzeBtn').disabled = false;
+  }
+}
+
+function exportReport() {
+  if (!currentData.data) return;
+  const d = currentData.data;
+  const addr = currentData.address;
+  const date = new Date().toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+
+  const lines = [
+    'DEAL ANALYSIS REPORT',
+    `Generated: ${date}`,
+    '',
+    `ADDRESS: ${addr}`,
+    `TMS/APN: ${d.parcel?.tms || '—'}`,
+    `Municipality: ${d.parcel?.municipality || '—'}`,
+    `Acreage: ${d.parcel?.acreage || '—'}`,
+    `Lot Size: ${d.parcel?.lotSizeSqFt || '—'}`,
+    `Dimensions: ${d.parcel?.dimensions || '—'}`,
+    `County Use: ${d.parcel?.countyUse || '—'}`,
+    '',
+    '─────────────────────────────────',
+    'ZONING',
+    '─────────────────────────────────',
+    `Designation: ${d.zoning?.designation || '—'}`,
+    `District Name: ${d.zoning?.districtName || '—'}`,
+    `Overlay District: ${d.zoning?.overlayDistrict || '—'}`,
+    `Overlay Details: ${d.zoning?.overlayDetails || '—'}`,
+    `Historic District: ${d.zoning?.historicDistrict || '—'}`,
+    `Min Lot Size: ${d.zoning?.minLotSize || '—'}`,
+    `Max Height: ${d.zoning?.maxHeight || '—'}`,
+    `Setbacks: ${d.zoning?.setbacks || '—'}`,
+    '',
+    '─────────────────────────────────',
+    'FLOOD ZONE',
+    '─────────────────────────────────',
+    `FEMA Zone: ${d.flood?.femaZone || '—'}`,
+    `Risk Level: ${d.flood?.riskLevel || '—'}`,
+    `Flood Insurance Required: ${d.flood?.insuranceRequired || '—'}`,
+    `Construction Impact: ${d.flood?.constructionImpact || '—'}`,
+    `Estimated Added Cost: ${d.flood?.estimatedAddedCost || '—'}`,
+    '',
+    '─────────────────────────────────',
+    'PERMITTED USES (BY RIGHT)',
+    '─────────────────────────────────',
+    ...(d.permittedUses?.byRight || ['—']),
+    '',
+    `Conditional Uses: ${(d.permittedUses?.conditional || []).join(', ') || '—'}`,
+    `Max Density: ${d.permittedUses?.maxDensity || '—'}`,
+    `Development Notes: ${d.permittedUses?.developmentNotes || '—'}`,
+    '',
+    '─────────────────────────────────',
+    'LAND & LOT COMPS',
+    '─────────────────────────────────',
+    ...(d.landComps?.length
+      ? d.landComps.map(c => `${c.address} | ${c.salePrice} | ${c.acreage} ac | ${c.pricePerAcre}/acre | ${c.saleDate} | ${c.notes}`)
+      : ['No comps found']),
+    '',
+    '─────────────────────────────────',
+    'NEW CONSTRUCTION COMPS',
+    '─────────────────────────────────',
+    ...(d.newConstruction?.length
+      ? d.newConstruction.map(c => `${c.addressBuilder} | ${c.productType} | ${c.salePrice} | ${c.sqFt} sqft | ${c.pricePerSqFt}/sqft | ${c.bedBath} | ${c.daysOnMarket} DOM`)
+      : ['No comps found']),
+    '',
+    '─────────────────────────────────',
+    'DEAL SUMMARY',
+    '─────────────────────────────────',
+    d.summary || '—',
+    '',
+    '─────────────────────────────────',
+    'VERIFY DIRECTLY',
+    '─────────────────────────────────',
+    'Charleston County GIS: https://gisccweb.charlestoncounty.org/public_search/',
+    'City of Charleston Zoning: https://gis.charleston-sc.gov/interactive/zoning/',
+    'FEMA Flood Map: https://msc.fema.gov/portal/search',
+    'Municode: https://library.municode.com/sc/charleston',
+    '',
+    'DISCLAIMER: Always verify zoning directly with the relevant planning department before making underwriting decisions.',
+  ];
+
+  const content = lines.join('\n');
+  const blob = new Blob([content], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Deal_Analysis_${addr.replace(/[^a-z0-9]/gi,'_').substring(0,35)}_${date.replace(/[\s,]/g,'_')}.doc`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+document.getElementById('addressInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') analyzeDeal();
+});
+</script>
+</body>
+</html>
