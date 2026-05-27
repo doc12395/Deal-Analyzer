@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VARNIK Deal Analyzer</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #0a0a0a;
@@ -31,18 +31,23 @@
       justify-content: space-between;
       align-items: center;
     }
+    .logo-group {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
     .logo {
       font-family: 'Playfair Display', serif;
-      font-size: 18px;
-      font-weight: 700;
+      font-size: 20px;
+      font-weight: 800;
       color: var(--accent);
-      letter-spacing: 1px;
+      letter-spacing: 2px;
     }
-    .nav-subtitle {
+    .logo-subtitle {
       font-size: 11px;
       color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
     }
     .nav-right {
       font-size: 10px;
@@ -50,39 +55,42 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       border: 1px solid var(--accent);
-      padding: 6px 12px;
+      padding: 8px 16px;
     }
     .hero {
       min-height: calc(100vh - 65px);
-      padding: 80px 40px;
+      padding: 40px 40px 60px 40px;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       text-align: center;
+      padding-top: 60px;
     }
-    .hero-content { max-width: 900px; margin-bottom: 80px; }
+    .hero-content { max-width: 900px; margin-bottom: 40px; }
     .hero h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 4.5rem;
-      font-weight: 700;
+      font-size: 5rem;
+      font-weight: 800;
       margin-bottom: 0;
-      line-height: 1;
+      line-height: 0.9;
       color: var(--text);
+      letter-spacing: -1px;
     }
     .hero-subtitle {
       font-family: 'Playfair Display', serif;
-      font-size: 3.5rem;
-      font-weight: 700;
+      font-size: 4rem;
+      font-weight: 800;
       color: var(--accent);
       font-style: italic;
-      margin-bottom: 40px;
-      line-height: 1;
+      margin-bottom: 30px;
+      line-height: 0.9;
+      letter-spacing: -1px;
     }
     .hero-desc {
       color: var(--muted);
       font-size: 13px;
-      line-height: 1.8;
+      line-height: 1.9;
       max-width: 700px;
       margin: 0 auto;
     }
@@ -93,6 +101,7 @@
       max-width: 900px;
       width: 100%;
       margin: 0 auto;
+      margin-top: 40px;
     }
     .search-label {
       display: block;
@@ -240,11 +249,12 @@
       border-color: var(--accent); 
     }
     @media (max-width: 768px) {
-      .hero { padding: 40px 20px; }
-      .hero h1 { font-size: 2.5rem; }
-      .hero-subtitle { font-size: 1.8rem; }
-      .navbar { padding: 16px 20px; flex-direction: column; gap: 12px; }
-      .search-container { padding: 24px; }
+      .hero { padding: 40px 20px 60px 20px; padding-top: 40px; }
+      .hero h1 { font-size: 3rem; }
+      .hero-subtitle { font-size: 2.2rem; }
+      .navbar { padding: 16px 20px; flex-direction: column; gap: 12px; align-items: flex-start; }
+      .logo-group { width: 100%; }
+      .search-container { padding: 24px; margin-top: 30px; }
       .search-input-wrapper { flex-direction: column; align-items: stretch; }
       .results-grid { grid-template-columns: 1fr; }
     }
@@ -252,9 +262,9 @@
 </head>
 <body>
   <div class="navbar">
-    <div>
+    <div class="logo-group">
       <div class="logo">VARNIK</div>
-      <div class="nav-subtitle">Deal Analyzer</div>
+      <div class="logo-subtitle">DEAL ANALYZER</div>
     </div>
     <div class="nav-right">Charleston CO · Live Data</div>
   </div>
@@ -270,7 +280,7 @@
       <div class="search-container">
         <label class="search-label">Property Address or TMS Number</label>
         <div class="search-input-wrapper">
-          <input type="text" id="addressInput" placeholder="e.g. 9 Maranda Holmes St, Charleston SC" />
+          <input type="text" id="addressInput" placeholder="e.g. 9 Maranda Holmes St, Charleston SC" onkeypress="handleKeyPress(event)" />
           <button class="analyze-btn" id="analyzeBtn" onclick="analyzeDeal()">Analyze →</button>
         </div>
         <p class="search-hint">Works with full street address or TMS / APN number · Charleston County, SC</p>
@@ -297,6 +307,12 @@
 
   <script>
     const BACKEND_URL = 'https://deal-analyzer-backend-production.up.railway.app/api/analyze';
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        analyzeDeal();
+      }
+    }
 
     async function analyzeDeal() {
       const address = document.getElementById('addressInput').value.trim();
