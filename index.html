@@ -9,9 +9,9 @@
     :root {
       --bg: #0a0a0a;
       --surface: #1a1a1a;
-      --border: #2a2a2a;
+      --border: #333333;
       --text: #ffffff;
-      --muted: #666666;
+      --muted: #888888;
       --accent: #ccff00;
       --accent-dark: #a3cc00;
     }
@@ -24,128 +24,143 @@
       font-size: 14px;
       line-height: 1.6;
     }
+    .navbar {
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 1px;
+    }
+    .nav-subtitle {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .nav-right {
+      font-size: 10px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 1px solid var(--accent);
+      padding: 6px 12px;
+    }
     .hero {
-      min-height: 100vh;
-      padding: 60px 40px;
+      min-height: calc(100vh - 65px);
+      padding: 80px 40px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
     }
-    .navbar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      padding: 20px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-    }
-    .logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--accent);
-    }
-    .nav-right {
-      font-size: 11px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .hero-content { max-width: 800px; margin-bottom: 60px; }
+    .hero-content { max-width: 900px; margin-bottom: 80px; }
     .hero h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 4rem;
+      font-size: 4.5rem;
       font-weight: 700;
-      margin-bottom: 20px;
-      line-height: 1.1;
+      margin-bottom: 0;
+      line-height: 1;
+      color: var(--text);
     }
     .hero-subtitle {
       font-family: 'Playfair Display', serif;
-      font-size: 2.5rem;
+      font-size: 3.5rem;
       font-weight: 700;
       color: var(--accent);
       font-style: italic;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
+      line-height: 1;
     }
     .hero-desc {
       color: var(--muted);
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.8;
-      margin-bottom: 40px;
+      max-width: 700px;
+      margin: 0 auto;
     }
     .search-container {
-      background: var(--surface);
+      background: transparent;
       border: 1px solid var(--border);
       padding: 40px;
-      border-radius: 4px;
-      max-width: 700px;
+      max-width: 900px;
       width: 100%;
       margin: 0 auto;
     }
     .search-label {
       display: block;
-      font-size: 11px;
+      font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       color: var(--accent);
-      margin-bottom: 16px;
+      margin-bottom: 24px;
+      font-weight: 600;
     }
-    .search-input-group {
+    .search-input-wrapper {
       display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
+      gap: 16px;
+      align-items: flex-end;
+      margin-bottom: 20px;
     }
     input {
       flex: 1;
       background: transparent;
       border: none;
+      border-bottom: 1px solid var(--border);
       color: var(--text);
       font-family: 'DM Mono', monospace;
       font-size: 14px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
     }
     input::placeholder { color: var(--muted); }
-    input:focus { outline: none; border-bottom-color: var(--accent); }
+    input:focus { 
+      outline: none; 
+      border-bottom-color: var(--accent);
+    }
     .analyze-btn {
       background: var(--accent);
       color: #000;
       border: none;
-      padding: 12px 24px;
+      padding: 14px 32px;
       font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
       cursor: pointer;
-      border-radius: 2px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       white-space: nowrap;
       transition: all 0.2s;
     }
-    .analyze-btn:hover:not(:disabled) { background: var(--accent-dark); }
-    .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .analyze-btn:hover:not(:disabled) { 
+      background: var(--accent-dark);
+    }
+    .analyze-btn:disabled { 
+      opacity: 0.5; 
+      cursor: not-allowed; 
+    }
     .search-hint {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--muted);
-      text-align: left;
+      letter-spacing: 0.5px;
     }
     .footer-text {
       position: absolute;
       bottom: 40px;
       left: 40px;
       right: 40px;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--muted);
-      line-height: 1.6;
-      max-width: 600px;
+      line-height: 1.7;
+      max-width: 800px;
     }
-    .loading { display: none; text-align: center; padding: 40px 20px; }
+    .loading { display: none; text-align: center; padding: 60px 40px; }
     .loading.active { display: block; }
     .spinner {
       border: 2px solid var(--border);
@@ -154,16 +169,29 @@
       width: 40px;
       height: 40px;
       animation: spin 1s linear infinite;
-      margin: 0 auto 16px;
+      margin: 0 auto 20px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .error { display: none; background: rgba(255,0,0,0.1); border: 1px solid #ff4444; padding: 16px; margin: 20px auto; max-width: 600px; border-radius: 2px; color: #ff8888; font-size: 13px; }
+    .error { 
+      display: none; 
+      background: rgba(255,0,0,0.1); 
+      border: 1px solid #ff4444; 
+      padding: 16px; 
+      margin: 40px auto; 
+      max-width: 600px; 
+      border-radius: 2px; 
+      color: #ff8888; 
+      font-size: 12px; 
+    }
     .error.active { display: block; }
-    .results-container { display: none; padding: 60px 40px; }
-    .results-container.active { display: block; }
-    .results-grid {
+    .results-view { display: none; }
+    .results-view.active { display: block; }
+    .results-container {
       max-width: 1200px;
       margin: 0 auto;
+      padding: 60px 40px;
+    }
+    .results-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 24px;
@@ -171,91 +199,100 @@
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
-      padding: 24px;
-      border-radius: 4px;
+      padding: 28px;
     }
     .card h2 {
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       color: var(--accent);
-      margin-bottom: 20px;
-      font-weight: 600;
+      margin-bottom: 24px;
+      font-weight: 700;
     }
     .data-row {
       display: flex;
       justify-content: space-between;
-      padding: 12px 0;
+      padding: 14px 0;
       border-bottom: 1px solid var(--border);
+      font-size: 12px;
     }
     .data-row:last-child { border-bottom: none; }
-    .data-label { color: var(--muted); font-size: 12px; }
-    .data-value { color: var(--text); font-size: 13px; text-align: right; }
+    .data-label { color: var(--muted); }
+    .data-value { color: var(--text); text-align: right; }
     .summary-card { grid-column: 1 / -1; }
     .summary-text { color: var(--text); font-size: 13px; line-height: 1.8; }
     .links-row {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-top: 16px;
+      margin-top: 20px;
     }
     .ext-link {
       color: var(--accent);
       text-decoration: none;
-      font-size: 12px;
+      font-size: 11px;
       padding: 8px 16px;
       border: 1px solid var(--border);
-      border-radius: 2px;
       transition: all 0.2s;
     }
-    .ext-link:hover { background: rgba(204,255,0,0.1); border-color: var(--accent); }
+    .ext-link:hover { 
+      background: rgba(204,255,0,0.1); 
+      border-color: var(--accent); 
+    }
     @media (max-width: 768px) {
       .hero { padding: 40px 20px; }
       .hero h1 { font-size: 2.5rem; }
-      .hero-subtitle { font-size: 1.5rem; }
-      .navbar { padding: 16px 20px; }
+      .hero-subtitle { font-size: 1.8rem; }
+      .navbar { padding: 16px 20px; flex-direction: column; gap: 12px; }
       .search-container { padding: 24px; }
+      .search-input-wrapper { flex-direction: column; align-items: stretch; }
       .results-grid { grid-template-columns: 1fr; }
-      .footer-text { font-size: 11px; left: 20px; right: 20px; bottom: 20px; }
     }
   </style>
 </head>
 <body>
   <div class="navbar">
-    <div class="logo">VARNIK</div>
+    <div>
+      <div class="logo">VARNIK</div>
+      <div class="nav-subtitle">Deal Analyzer</div>
+    </div>
     <div class="nav-right">Charleston CO · Live Data</div>
   </div>
 
-  <div class="hero" id="heroSection">
-    <div class="hero-content">
-      <h1>Drop an address.</h1>
-      <div class="hero-subtitle">Get the full picture.</div>
-      <p class="hero-desc">Zoning, flood zone, overlay districts, permitted uses, and comps — pulled directly from Charleston County GIS, City of Charleston, and FEMA. No middlemen.</p>
-    </div>
-
-    <div class="search-container">
-      <label class="search-label">Property Address or TMS Number</label>
-      <div class="search-input-group">
-        <input type="text" id="addressInput" placeholder="e.g. 9 Maranda Holmes St, Charleston SC" />
-        <button class="analyze-btn" id="analyzeBtn" onclick="analyzeDeal()">Analyze →</button>
+  <div id="heroView">
+    <div class="hero">
+      <div class="hero-content">
+        <h1>Drop an address.</h1>
+        <div class="hero-subtitle">Get the full picture.</div>
+        <p class="hero-desc">Zoning, flood zone, overlay districts, permitted uses, and comps — pulled directly from Charleston County GIS, City of Charleston, and FEMA. No middlemen.</p>
       </div>
-      <p class="search-hint">Works with full street address or TMS / APN number · Charleston County, SC</p>
-    </div>
 
-    <div class="loading" id="loadingState">
-      <div class="spinner"></div>
-      <p>Pulling data...</p>
-    </div>
+      <div class="search-container">
+        <label class="search-label">Property Address or TMS Number</label>
+        <div class="search-input-wrapper">
+          <input type="text" id="addressInput" placeholder="e.g. 9 Maranda Holmes St, Charleston SC" />
+          <button class="analyze-btn" id="analyzeBtn" onclick="analyzeDeal()">Analyze →</button>
+        </div>
+        <p class="search-hint">Works with full street address or TMS / APN number · Charleston County, SC</p>
+      </div>
 
-    <div class="error" id="errorState"></div>
+      <div class="loading" id="loadingState">
+        <div class="spinner"></div>
+        <p>Pulling data...</p>
+      </div>
 
-    <div class="footer-text">
-      All parcel and zoning data pulled directly from Charleston County GIS (gisccapps.charlestoncounty.org) and City of Charleston official GIS. Flood data from FEMA DFIRM via Charleston County. Comparable sales based on market knowledge and public records. Always verify zoning with the relevant planning department before making underwriting decisions. This tool does not constitute legal or financial advice.
+      <div class="error" id="errorState"></div>
+
+      <div class="footer-text">
+        All parcel and zoning data pulled directly from Charleston County GIS (gisccapps.charlestoncounty.org) and City of Charleston official GIS. Flood data from FEMA DFIRM via Charleston County. Comparable sales based on market knowledge and public records. Always verify zoning with the relevant planning department before making underwriting decisions. This tool does not constitute legal or financial advice.
+      </div>
     </div>
   </div>
 
-  <div class="results-container" id="resultsSection">
-    <div class="results-grid" id="results"></div>
+  <div class="results-view" id="resultsView">
+    <div class="results-container">
+      <div class="results-grid" id="results"></div>
+    </div>
   </div>
 
   <script>
@@ -287,8 +324,8 @@
 
         renderResults(data);
         document.getElementById('loadingState').classList.remove('active');
-        document.getElementById('heroSection').style.display = 'none';
-        document.getElementById('resultsSection').classList.add('active');
+        document.getElementById('heroView').style.display = 'none';
+        document.getElementById('resultsView').classList.add('active');
 
       } catch (error) {
         document.getElementById('loadingState').classList.remove('active');
@@ -305,24 +342,24 @@
           <h2>Parcel</h2>
           <div class="data-row"><span class="data-label">TMS</span><span class="data-value">${data.parcel?.tms || '—'}</span></div>
           <div class="data-row"><span class="data-label">Acreage</span><span class="data-value">${data.parcel?.acreage || '—'}</span></div>
-          <div class="data-row"><span class="data-label">Sq Ft</span><span class="data-value">${data.parcel?.lotSizeSqFt || '—'}</span></div>
+          <div class="data-row"><span class="data-label">Lot Size (Sq Ft)</span><span class="data-value">${data.parcel?.lotSizeSqFt || '—'}</span></div>
           <div class="data-row"><span class="data-label">County Use</span><span class="data-value">${data.parcel?.countyUse || '—'}</span></div>
         </div>
 
         <div class="card">
           <h2>Zoning</h2>
-          <div class="data-row"><span class="data-label">Base Zone</span><span class="data-value">${data.zoning?.designation || '—'}</span></div>
-          <div class="data-row"><span class="data-label">Overlay</span><span class="data-value">${data.zoning?.overlayDistrict || '—'}</span></div>
+          <div class="data-row"><span class="data-label">Base Zoning</span><span class="data-value">${data.zoning?.designation || '—'}</span></div>
+          <div class="data-row"><span class="data-label">Overlay District</span><span class="data-value">${data.zoning?.overlayDistrict || '—'}</span></div>
           <div class="data-row"><span class="data-label">Max Height</span><span class="data-value">${data.zoning?.maxHeight || '—'}</span></div>
-          <div class="data-row"><span class="data-label">Historic</span><span class="data-value">${data.zoning?.historicDistrict || '—'}</span></div>
+          <div class="data-row"><span class="data-label">Historic District</span><span class="data-value">${data.zoning?.historicDistrict || '—'}</span></div>
         </div>
 
         <div class="card">
-          <h2>Flood</h2>
+          <h2>Flood Zone</h2>
           <div class="data-row"><span class="data-label">FEMA Zone</span><span class="data-value">${data.flood?.femaZone || '—'}</span></div>
-          <div class="data-row"><span class="data-label">Risk</span><span class="data-value">${data.flood?.riskLevel || '—'}</span></div>
-          <div class="data-row"><span class="data-label">Impact</span><span class="data-value">${data.flood?.constructionImpact || '—'}</span></div>
-          <div class="data-row"><span class="data-label">Est Cost</span><span class="data-value">${data.flood?.estimatedAddedCost || '—'}</span></div>
+          <div class="data-row"><span class="data-label">Risk Level</span><span class="data-value">${data.flood?.riskLevel || '—'}</span></div>
+          <div class="data-row"><span class="data-label">Construction Impact</span><span class="data-value">${data.flood?.constructionImpact || '—'}</span></div>
+          <div class="data-row"><span class="data-label">Est. Added Cost</span><span class="data-value">${data.flood?.estimatedAddedCost || '—'}</span></div>
         </div>
 
         <div class="card">
